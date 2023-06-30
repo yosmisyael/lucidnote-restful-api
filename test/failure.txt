@@ -1,0 +1,30 @@
+import supertest from 'supertest'
+import { web } from '../src/apps/web'
+import { prismaClient } from '../src/apps/database.js'
+
+describe('POST /api/users', function () {
+  afterEach(async () => {
+    await prismaClient.user.deleteMany({
+      where: {
+        username: 'amefutetta'
+      }
+    })
+  })
+
+  it('should can register new user', async () => {
+    const result = supertest(web)
+      .post('/api/users')
+      .send({
+        username: 'amefutteta',
+        password: 'itsame',
+        name: 'Ame Chan',
+        email: 'amefutteta@gmail.com'
+      })
+
+    expect(result.status).toBe(200)
+    expect(result.body.data.username).toBe('amefutteta')
+    expect(result.body.data.password).toBeUndefined()
+    expect(result.body.data.email).toBeUndefined()
+    expect(result.body.data.username).toBe('Ame Chan')
+  })
+})
