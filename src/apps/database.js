@@ -4,19 +4,19 @@ import { logger } from './logging.js'
 export const prismaClient = new PrismaClient({
   log: [
     {
-      emit: 'stdout',
+      emit: 'event',
       level: 'query'
     },
     {
-      emit: 'stdout',
+      emit: 'event',
       level: 'error'
     },
     {
-      emit: 'stdout',
+      emit: 'event',
       level: 'info'
     },
     {
-      emit: 'stdout',
+      emit: 'event',
       level: 'warn'
     }
   ]

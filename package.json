@@ -5,11 +5,12 @@
   "main": "src/server.js",
   "type": "module",
   "scripts": {
-    "test": "jest -i",
-    "start-dev": "node ."
+    "test": "jest -i"
   },
-  "transform": {
-    "^.+\\.jsx?$": "babel-jest"
+  "jest": {
+    "transform": {
+      "^.+\\.jsx?$": "babel-jest"
+    }
   },
   "author": "Misyael Yosevian Wiarda",
   "license": "ISC",

@@ -13,8 +13,9 @@ export const createTestUser = async () => {
   await prismaClient.user.create({
     data: {
       username: 'test',
-      password: await bcrypt.hash('rahasia', 10),
+      password: await bcrypt.hash('test', 10),
       name: 'test',
+      email: 'test@test.com',
       token: 'test'
     }
   })
