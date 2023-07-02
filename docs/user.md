@@ -1,15 +1,15 @@
 # User API Specifications
 
 ## Register User API
-Endpoint: POST /api/user
+Endpoint: POST /api/users
 
 Request body: 
 ```json
 {
-  "username": "user",
-  "password": "user987",
-  "name": "John Doe",
-  "email": "johndoe@user.com"
+  "username": "test",
+  "password": "test",
+  "name": "test",
+  "email": "test@test.com"
 }
 ```
 
@@ -17,8 +17,8 @@ Response body success:
 ```json
 {
   "data": {
-  "username": "user",
-  "name": "John Doe"
+  "username": "test",
+  "name": "test"
   }
 }
 ```
@@ -26,18 +26,18 @@ Response body success:
 Response body error:
 ```json
 {
-  "error": "Username already taken by other user, choose another username"
+  "error": "username already exist"
 }
 ```
 
 ## Login User API
-Endpoint: GET /api/user/login
+Endpoint: GET /api/users/login
 
 Request body:
 ```json
 {
-  "username": "user",
-  "password": "user987"
+  "username": "test",
+  "password": "test"
 }
 ```
 
@@ -53,12 +53,12 @@ Response body success:
 Response body error:
 ```json
 {
-  "error": "username/password wrong"
+  "error": "username or password wrong"
 }
 ```
 
 ## Update User API
-Endpoint: PATCH /api/user/id
+Endpoint: PATCH /api/users/current
 
 Header: 
   - Authorization: token
@@ -66,7 +66,6 @@ Header:
 Request body:
 ```json
 {
-  "username": "new username", // optional
   "name": "new name", // optional
   "password": "new password" // optional
 }
@@ -76,8 +75,9 @@ Response body success:
 ```json
 {
   "data": {
-    "username": "new username", // optional
+    "username": "test",
     "name": "new name", // optional
+    "password": "new password" // optional
   }
 }
 ```
@@ -85,11 +85,11 @@ Response body success:
 Response body error:
 ```json
 {
-  "error": "Username already registered"
+  "error": "unauthorized"
 }
 ```
 ## Get User API
-Endpoint: GET /api/user/id
+Endpoint: GET /api/users/current
 
 Header: 
   - Authorization: token
@@ -107,11 +107,11 @@ Response body success:
 Response body error:
 ```json
 {
-  "error": "Unauthorized"
+  "error": "unauthorized"
 }
 ```
 ## Logout User API
-Endpoint: DELETE /api/user/logout
+Endpoint: DELETE /api/users/logout
 
 Header: 
   - Authorization: token
@@ -125,6 +125,6 @@ Response body success:
 Response body error:
 ```json
 {
-  "error": "Unauthorized"
+  "error": "unauthorized"
 }
 ```

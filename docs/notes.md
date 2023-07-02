@@ -3,30 +3,28 @@
 ## Create Note API
 Endpoint: POST /api/notes
 
-#####Header: 
+Header: 
   - Authorization: token
 
-#####Request body:
+Request body:
 ```json
 {
   "data": {
     "title": "My Note",
-    "body": "This is my first note.",
-    "tag": ["test"]
+    "body": "This is my first note.",  // optional
   }
 }
 ```
-#####Response body success:
+Response body success:
 ```json
 {
   "status": "success",
   "data": {
     "id": "unique-id",
-  },
-  "message": "Note created successfully."
+  }
 }
 ```
-#####Response body error:
+Response body error:
 ```json
 {
   "error": "Failed to create note."
@@ -34,10 +32,10 @@ Endpoint: POST /api/notes
 ```
 ## Update Note API
 Endpoint: PUT /api/notes/id
-#####Header: 
+Header: 
   - Authorization: token
 
-#####Request body:
+Request body:
 ```json
 {
   "title": "My New Title",
@@ -45,14 +43,14 @@ Endpoint: PUT /api/notes/id
   "tag": []
 }
 ```
-#####Response body success:
+Response body success:
 ```json
 {
   "status": "success",
   "message": "Note updated successfully."
 }
 ```
-#####Response body error:
+Response body error:
 ```json
 {
   "error": "Failed to update note"
@@ -61,10 +59,10 @@ Endpoint: PUT /api/notes/id
 ## Get All Notes API
 Endpoint: GET /api/notes
 
-#####Header: 
+Header: 
   - Authorization: token
 
-#####Response body success:
+Response body success:
 ```json
 {
   "data": [
@@ -81,8 +79,8 @@ Endpoint: GET /api/notes
       "title": "My New Title",
       "body": "I just updated my note.",
       "tag": [],
-      "createdAt": "dd-mm-yy",
-      "updatedAt": "dd-mm-yy"
+      "createdAt": 0, // unix epoch time
+      "updatedAt": 0 // unix epoch time
     }
   ]
 }
@@ -91,21 +89,21 @@ Endpoint: GET /api/notes
 ## Get Note API
 Endpoint: GET /api/notes/id
 
-#####Header: 
+Header: 
   - Authorization: token
 
-#####Response body success:
+Response body success:
 ```json
 {
   "id": "unique-id",
   "title": "My New Title",
   "body": "I just updated my note.",
   "tag": [],
-  "createdAt": "",
-  "updatedAt": "dd-mm-yy"
+  "createdAt": 0, // unix epoch time
+  "updatedAt": 0 // unix epoch time
 }
 ```
-#####Response body error:
+Response body error:
 ```json
 {
   "error": "Note id not found."
@@ -113,17 +111,17 @@ Endpoint: GET /api/notes/id
 ```
 ## Delete Note API 
 Endpoint: DELETE /api/notes/id
-#####Header: 
+Header: 
   - Authorization: token
 
-#####Response body success:
+Response body success:
 ```json
 {
   "status": "success",
   "message": "Note deleted successfully"
 }
 ```
-#####Response body error:
+Response body error:
 ```json
 {
   "error": "Note id not found."
@@ -131,16 +129,16 @@ Endpoint: DELETE /api/notes/id
 ```
 ## Search Note API
 Endpoint: GET /api/notes?title=something
-#####Header: 
+Header: 
   - Authorization: token
 
-#####Response body success:
+Response body success:
 ```json
 {
   "data": []
 }
 ```
-#####Response body error:
+Response body error:
 ```json
 {
   "error": "Not found"
