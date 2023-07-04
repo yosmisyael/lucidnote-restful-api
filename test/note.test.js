@@ -2,6 +2,7 @@
 import supertest from 'supertest'
 import { web } from '../src/apps/web.js'
 import { createTestNotes, createTestUser, deleteAllTestNotes, getTestNotes, removeTestUser } from './test-util.js'
+import { logger } from '../src/apps/logging.js'
 
 describe('POST /api/notes', function () {
   beforeEach(async () => {
@@ -24,7 +25,7 @@ describe('POST /api/notes', function () {
     expect(result.status).toBe(200)
     expect(result.body.data.id).toBeDefined()
   })
-  it('reject invalid request', async () => {
+  it('reject invalid body request', async () => {
     const result = await supertest(web)
       .post('/api/notes')
       .set('Authorization', 'test')
@@ -59,8 +60,10 @@ describe('GET /api/notes', function () {
     expect(result.body.data.id).toBe(testNote.id)
     expect(result.body.data.title).toBe(testNote.title)
     expect(result.body.data.body).toBe(testNote.body)
-    expect(result.body.data.createdAt).toBe(testNote.createdAt)
-    expect(result.body.data.updatedAt).toBe(testNote.updatedAt)
+    expect(result.body.data.createdAt).toBe(parseInt(testNote.createdAt))
+    expect(result.body.data.updatedAt).toBe(parseInt(testNote.updatedAt))
+
+    logger.info(result)
   })
   it('reject get note request if id is not found', async () => {
     const result = await supertest(web)
@@ -98,6 +101,8 @@ describe('PUT /api/note/:id', function () {
     expect(result.body.data.title).toBe('test updated')
     expect(result.body.data.body).toBe('')
     expect(result.body.data.updatedAt).not.toBe(result.body.data.createdAt)
+
+    logger.info(result)
   })
   it('reject update note request if request body is invalid', async () => {
     const testNote = await getTestNotes()

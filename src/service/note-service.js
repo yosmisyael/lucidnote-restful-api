@@ -9,11 +9,11 @@ const create = async (user, request) => {
   note.username = user.username
 
   const data = { ...note }
-  data.createdAt = Date.now().toString()
+  data.createdAt = Date.now()
   data.updatedAt = data.createdAt
   data.id = uuid().toString()
 
-  return prismaClient.note.create({
+  return await prismaClient.note.create({
     data,
     select: {
       id: true
@@ -26,8 +26,8 @@ const get = async (user, noteId) => {
 
   const note = await prismaClient.note.findFirst({
     where: {
-      username: user.username,
-      id: noteId
+      id: noteId,
+      username: user.username
     },
     select: {
       id: true,
@@ -41,7 +41,8 @@ const get = async (user, noteId) => {
   if (!note) {
     throw new ResponseError(404, 'note is not found')
   }
-
+  note.createdAt = parseInt(note.createdAt)
+  note.updatedAt = parseInt(note.updatedAt)
   return note
 }
 
@@ -58,14 +59,14 @@ const update = async (user, request) => {
     throw new ResponseError(404, 'note is not found ')
   }
 
-  return prismaClient.note.update({
+  let result = await prismaClient.note.update({
     where: {
       id: note.id
     },
     data: {
       title: note.title,
       body: note.body,
-      updatedAt: Date.now().toString()
+      updatedAt: Date.now()
     },
     select: {
       id: true,
@@ -75,6 +76,11 @@ const update = async (user, request) => {
       updatedAt: true
     }
   })
+
+  result = JSON.stringify(result, (key, value) => (typeof value === 'bigint' ? parseInt(value) : value))
+  result = JSON.parse(result)
+
+  return result
 }
 
 const remove = async (user, noteId) => {

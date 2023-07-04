@@ -1,6 +1,7 @@
 import { prismaClient } from '../src/apps/database.js'
 import bcrypt from 'bcrypt'
 
+// user test util
 export const removeTestUser = async () => {
   await prismaClient.user.deleteMany({
     where: {
@@ -29,6 +30,7 @@ export const getTestUser = async () => {
   })
 }
 
+// note test util
 export const deleteAllTestNotes = async () => {
   await prismaClient.note.deleteMany({
     where: {
@@ -44,8 +46,8 @@ export const createTestNotes = async () => {
       username: 'test',
       title: 'test',
       body: 'test',
-      createdAt: Date.now().toString(),
-      updatedAt: Date.now().toString()
+      createdAt: Date.now(),
+      updatedAt: Date.now()
     }
   })
 }
@@ -67,7 +69,35 @@ export const createManyTestContacts = async () => {
 export const getTestNotes = async () => {
   return prismaClient.note.findFirst({
     where: {
+      username: 'test',
+      id: 'test'
+    }
+  })
+}
+
+// tag test util
+export const removeTestTag = async () => {
+  return prismaClient.tag.deleteMany({
+    where: {
       username: 'test'
+    }
+  })
+}
+
+export const createTestTag = async () => {
+  return prismaClient.tag.create({
+    data: {
+      username: 'test',
+      tagName: 'test',
+      id: 'test'
+    }
+  })
+}
+
+export const getTestTag = async () => {
+  return prismaClient.tag.findFirst({
+    where: {
+      id: 'test'
     }
   })
 }
