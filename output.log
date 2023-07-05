@@ -1,9 +1,0 @@
-{"level":"info","message":"Starting a mysql pool with 5 connections.","target":"quaint::pooled","timestamp":"2023-06-30T20:13:54.719Z"}
-{"level":"info","message":{"data":{"email":"test@test.com","name":"test","username":"test"}}}
-{"level":"info","message":{"errors":"\"username\" is not allowed to be empty. \"password\" is not allowed to be empty. \"name\" is not allowed to be empty. \"email\" is not allowed to be empty"}}
-{"level":"info","message":{"errors":"username already exist"}}
-{"level":"info","message":"Starting a mysql pool with 5 connections.","target":"quaint::pooled","timestamp":"2023-06-30T20:21:13.081Z"}
-{"level":"info","message":{"data":{"email":"test@test.com","name":"test","username":"test"}}}
-{"level":"info","message":{"errors":"\"username\" is not allowed to be empty. \"password\" is not allowed to be empty. \"name\" is not allowed to be empty. \"email\" is not allowed to be empty"}}
-{"level":"info","message":{"errors":"username already exist"}}
-{"level":"info","message":"Starting a mysql pool with 5 connections.","target":"quaint::pooled","timestamp":"2023-06-30T20:30:39.312Z"}

@@ -1,6 +1,6 @@
 import { prismaClient } from '../apps/database.js'
 import { ResponseError } from '../error/response-error.js'
-import { createNoteValidation, deleteNoteValidation, getNoteValidation, updateNoteValidation } from '../validation/note-validation.js'
+import { createNoteValidation, deleteNoteValidation, getNoteValidation, searchNoteValidation, updateNoteValidation } from '../validation/note-validation.js'
 import { validate } from '../validation/validation.js'
 import { v4 as uuid } from 'uuid'
 
@@ -104,9 +104,52 @@ const remove = async (user, noteId) => {
   })
 }
 
+const search = async (user, request) => {
+  request = validate(searchNoteValidation, request)
+
+  const skip = (request.page - 1) * request.size
+
+  const filter = [{ username: user.username }]
+
+  if (request.title) {
+    filter.push({
+      title: {
+        contains: request.title
+      }
+    })
+  }
+
+  let notes = await prismaClient.note.findMany({
+    where: {
+      AND: filter
+    },
+    take: request.size,
+    skip
+  })
+  notes = notes.map((note) => {
+    note.createdAt = parseInt(note.createdAt)
+    note.updatedAt = parseInt(note.updatedAt)
+    return note
+  })
+  const countNotes = await prismaClient.note.count({
+    where: {
+      AND: filter
+    }
+  })
+  return {
+    data: notes,
+    paging: {
+      page: request.page,
+      totalItem: countNotes,
+      totalPage: Math.ceil(countNotes / request.size)
+    }
+  }
+}
+
 export default {
   create,
   get,
   update,
-  remove
+  remove,
+  search
 }

@@ -52,15 +52,16 @@ export const createTestNotes = async () => {
   })
 }
 
-export const createManyTestContacts = async () => {
+export const createManyTestNotes = async () => {
   for (let i = 0; i < 15; i++) {
-    await prismaClient.contact.create({
+    await prismaClient.note.create({
       data: {
+        id: `test ${i}`,
         username: 'test',
-        first_name: `test ${i}`,
-        last_name: `test ${i}`,
-        email: `test${i}@pzn.com`,
-        phone: `080900000${i}`
+        title: `test ${i}`,
+        body: `test ${i}`,
+        createdAt: Date.now(),
+        updatedAt: Date.now()
       }
     })
   }

@@ -61,33 +61,6 @@ Response body error:
 }
 ```
 
-## Get All Notes API
-Endpoint: GET /api/notes
-
-Header: 
-  - Authorization: token
-
-Response body success:
-```json
-{
-  "data": [
-    {
-      "id": "unique-id",
-      "title": "test1",
-      "body": "test1",
-      "createdAt": 1688302310471, // unix epoch time
-      "updatedAt": 1688302310471 // unix epoch time
-    },
-    {
-      "id": "unique-id",
-      "title": "test2",
-      "body": "test2",
-      "createdAt": 1688302310471, // unix epoch time
-      "updatedAt": 1688302310471 // unix epoch time
-    }
-  ]
-}
-```
 
 ## Get Note API
 Endpoint: GET /api/notes/id
@@ -132,20 +105,38 @@ Response body error:
 ```
 
 ## Search Note API
-Endpoint: GET /api/notes?title=something
+Endpoint: GET /api/notes
 Header: 
   - Authorization: token
 
+Query Params:
+  - title: search by title 
+  - page: number of page, default 1
+  - size: size per page, default 10
 Response body success:
 ```json
 {
-  "data": []
-}
-```
-Response body error:
-```json
-{
-  "error": "Not found"
+  "data": [
+    {
+      "id": "unique-id",
+      "title": "first note",
+      "body": "example body",
+      "createdAt": 1688302310471,
+      "updatedAt": 1688302324523
+    }, 
+    {
+      "id": "unique-id",
+      "title": "second note",
+      "body": "example body",
+      "createdAt": 1688302310471,
+      "updatedAt": 1688302324523
+    }, 
+  ],
+  "paging": {
+    "page": 1,
+    "totalPage": 3,
+    "totalItem": 30
+  }
 }
 ```
 

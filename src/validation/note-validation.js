@@ -15,9 +15,16 @@ const updateNoteValidation = Joi.object({
 
 const deleteNoteValidation = Joi.string().max(100).required()
 
+const searchNoteValidation = Joi.object({
+  page: Joi.number().min(1).positive().default(1),
+  size: Joi.number().min(1).positive().max(100).default(10),
+  title: Joi.string().optional()
+})
+
 export {
   createNoteValidation,
   getNoteValidation,
   updateNoteValidation,
-  deleteNoteValidation
+  deleteNoteValidation,
+  searchNoteValidation
 }

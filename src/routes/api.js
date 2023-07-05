@@ -15,6 +15,7 @@ userRouter.post('/api/notes', noteController.create)
 userRouter.get('/api/notes/:id', noteController.get)
 userRouter.put('/api/notes/:id', noteController.update)
 userRouter.delete('/api/notes/:id', noteController.remove)
+userRouter.get('/api/notes', noteController.search)
 
 userRouter.post('/api/tags', tagController.create)
 userRouter.put('/api/tags/:id', tagController.update)

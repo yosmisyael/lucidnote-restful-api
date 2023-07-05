@@ -54,9 +54,28 @@ const remove = async (req, res, next) => {
   }
 }
 
+const search = async (req, res, next) => {
+  try {
+    const user = req.user
+    const request = {
+      title: req.query.title,
+      size: req.query.size,
+      page: req.query.page
+    }
+    const result = await noteService.search(user, request)
+    res.status(200).json({
+      data: result.data,
+      paging: result.paging
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
 export default {
   create,
   get,
   update,
-  remove
+  remove,
+  search
 }

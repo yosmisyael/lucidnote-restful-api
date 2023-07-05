@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import supertest from 'supertest'
 import { web } from '../src/apps/web.js'
-import { createTestNotes, createTestUser, deleteAllTestNotes, getTestNotes, removeTestUser } from './test-util.js'
+import { createManyTestNotes, createTestNotes, createTestUser, deleteAllTestNotes, getTestNotes, removeTestUser } from './test-util.js'
 import { logger } from '../src/apps/logging.js'
 
 describe('POST /api/notes', function () {
@@ -161,5 +161,53 @@ describe('DELETE /api/users/:id', function () {
 
     expect(result.status).toBe(404)
     expect(result.body.errors).toBeDefined()
+  })
+})
+
+describe('GET /api/notes', function () {
+  beforeEach(async () => {
+    await createTestUser()
+    await createManyTestNotes()
+  })
+
+  afterEach(async () => {
+    await deleteAllTestNotes()
+    await removeTestUser()
+  })
+
+  it('allow search without any parameter', async () => {
+    const result = await supertest(web)
+      .get('/api/notes')
+      .set('Authorization', 'test')
+
+    expect(result.status).toBe(200)
+    expect(result.body.data.length).toBe(15)
+    expect(result.body.paging.page).toBe(1)
+    expect(result.body.paging.totalPage).toBe(2)
+    expect(result.body.paging.totalItem).toBe(15)
+  })
+  it('allow search to page 2', async () => {
+    const result = await supertest(web)
+      .get('/api/notes')
+      .set('Authorization', 'test')
+      .query({ page: 2 })
+
+    expect(result.status).toBe(200)
+    expect(result.body.data.length).toBe(15)
+    expect(result.body.paging.page).toBe(2)
+    expect(result.body.paging.totalPage).toBe(2)
+    expect(result.body.paging.totalItem).toBe(15)
+  })
+  it('allow search using name', async () => {
+    const result = await supertest(web)
+      .get('/api/notes')
+      .set('Authorization', 'test')
+      .query({ title: 'test 7' })
+
+    expect(result.status).toBe(200)
+    expect(result.body.paging.page).toBe(1)
+    expect(result.body.data.length).toBe(1)
+    expect(result.body.paging.totalPage).toBe(1)
+    expect(result.body.paging.totalItem).toBe(1)
   })
 })
