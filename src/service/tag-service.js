@@ -1,5 +1,5 @@
 import { validate } from '../validation/validation.js'
-import { createTagValidation, deleteTagValidation, updateTagValidation } from '../validation/tag-validation.js'
+import { createTagValidation, deleteTagValidation, getAllTagValidation, updateTagValidation } from '../validation/tag-validation.js'
 import { prismaClient } from '../apps/database.js'
 import { ResponseError } from '../error/response-error.js'
 import { v4 as uuid } from 'uuid'
@@ -29,6 +29,26 @@ const create = async (user, request) => {
     data,
     select: {
       id: true
+    }
+  })
+}
+
+const get = async (user) => {
+  user = validate(getAllTagValidation, user.username)
+
+  const count = await prismaClient.tag.count({
+    where: {
+      username: user
+    }
+  })
+
+  if (count === 0) {
+    throw new ResponseError(404, 'no tag has created yet')
+  }
+
+  return prismaClient.tag.findMany({
+    where: {
+      username: user
     }
   })
 }
@@ -80,6 +100,20 @@ const remove = async (user, tagId) => {
     throw new ResponseError(404, 'tag is not found')
   }
 
+  const countUseTag = await prismaClient.noteTag.count({
+    where: {
+      tagId: id
+    }
+  })
+
+  if (countUseTag > 0) {
+    await prismaClient.noteTag.deleteMany({
+      where: {
+        tagId: id
+      }
+    })
+  }
+
   return prismaClient.tag.delete({
     where: {
       id
@@ -87,4 +121,4 @@ const remove = async (user, tagId) => {
   })
 }
 
-export default { create, update, remove }
+export default { create, update, remove, get }

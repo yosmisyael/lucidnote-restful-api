@@ -1,7 +1,17 @@
 /* eslint-disable no-undef */
 import supertest from 'supertest'
 import { web } from '../src/apps/web.js'
-import { createManyTestNotes, createTestNotes, createTestUser, deleteAllTestNotes, getTestNotes, removeTestUser } from './test-util.js'
+import {
+  attachTag,
+  createManyTestNotes,
+  createTestNotes,
+  createTestTag,
+  createTestUser,
+  deleteAllTestNotes,
+  getTestNotes,
+  removeAllTestTag,
+  removeTestUser
+} from './test-util.js'
 import { logger } from '../src/apps/logging.js'
 
 describe('POST /api/notes', function () {
@@ -14,7 +24,7 @@ describe('POST /api/notes', function () {
     await removeTestUser()
   })
 
-  it('allow user to create a new note', async () => {
+  it('should can create a new note', async () => {
     const result = await supertest(web)
       .post('/api/notes')
       .set('Authorization', 'test')
@@ -25,7 +35,7 @@ describe('POST /api/notes', function () {
     expect(result.status).toBe(200)
     expect(result.body.data.id).toBeDefined()
   })
-  it('reject invalid body request', async () => {
+  it('should reject create request if request body is invalid', async () => {
     const result = await supertest(web)
       .post('/api/notes')
       .set('Authorization', 'test')
@@ -38,7 +48,7 @@ describe('POST /api/notes', function () {
   })
 })
 
-describe('GET /api/notes', function () {
+describe('GET /api/notes/:noteId', function () {
   beforeEach(async () => {
     await createTestUser()
     await createTestNotes()
@@ -49,7 +59,7 @@ describe('GET /api/notes', function () {
     await removeTestUser()
   })
 
-  it('allow user to get a note', async () => {
+  it('should can get a note', async () => {
     const testNote = await getTestNotes()
 
     const result = await supertest(web)
@@ -65,7 +75,7 @@ describe('GET /api/notes', function () {
 
     logger.info(result)
   })
-  it('reject get note request if id is not found', async () => {
+  it('should reject get note request if id is not found', async () => {
     const result = await supertest(web)
       .get('/api/notes/' + 'dumb')
       .set('Authorization', 'test')
@@ -75,7 +85,7 @@ describe('GET /api/notes', function () {
   })
 })
 
-describe('PUT /api/note/:id', function () {
+describe('PUT /api/note/:noteId', function () {
   beforeEach(async () => {
     await createTestUser()
     await createTestNotes()
@@ -86,7 +96,7 @@ describe('PUT /api/note/:id', function () {
     await removeTestUser()
   })
 
-  it('allow update note request from coresponding user', async () => {
+  it('should update tag of a note when provided with valid tag data', async () => {
     const testNote = await getTestNotes()
 
     const result = await supertest(web)
@@ -104,7 +114,7 @@ describe('PUT /api/note/:id', function () {
 
     logger.info(result)
   })
-  it('reject update note request if request body is invalid', async () => {
+  it('should reject update note request if request body is invalid', async () => {
     const testNote = await getTestNotes()
 
     const result = await supertest(web)
@@ -117,7 +127,7 @@ describe('PUT /api/note/:id', function () {
     expect(result.status).toBe(400)
     expect(result.body.errors).toBeDefined()
   })
-  it('reject update note request if note id not found', async () => {
+  it('should reject update note request if note id is not found', async () => {
     const result = await supertest(web)
       .put('/api/notes/' + 'dumb')
       .set('Authorization', 'test')
@@ -130,7 +140,7 @@ describe('PUT /api/note/:id', function () {
   })
 })
 
-describe('DELETE /api/users/:id', function () {
+describe('DELETE /api/users/:noteId', function () {
   beforeEach(async () => {
     await createTestUser()
     await createTestNotes()
@@ -138,10 +148,11 @@ describe('DELETE /api/users/:id', function () {
 
   afterEach(async () => {
     await deleteAllTestNotes()
+    await removeAllTestTag()
     await removeTestUser()
   })
 
-  it('allow user to delete a note', async () => {
+  it('should can delete note', async () => {
     let testNote = await getTestNotes()
 
     const result = await supertest(web)
@@ -154,7 +165,21 @@ describe('DELETE /api/users/:id', function () {
     testNote = await getTestNotes()
     expect(testNote).toBeNull()
   })
-  it('reject delete request if note id is not found', async () => {
+  it('should can delete notes that have tags', async () => {
+    await createTestTag()
+    await attachTag()
+
+    const result = await supertest(web)
+      .delete('/api/notes/test')
+      .set('Authorization', 'test')
+
+    expect(result.status).toBe(200)
+    expect(result.body.data).toBe('OK')
+
+    const testNote = await getTestNotes()
+    expect(testNote).toBeNull()
+  })
+  it('should reject the delete request if the note ID is not found', async () => {
     const result = await supertest(web)
       .delete('/api/notes/' + 'dumb')
       .set('Authorization', 'test')
@@ -175,30 +200,30 @@ describe('GET /api/notes', function () {
     await removeTestUser()
   })
 
-  it('allow search without any parameter', async () => {
+  it('should can search without any parameter', async () => {
     const result = await supertest(web)
       .get('/api/notes')
       .set('Authorization', 'test')
 
     expect(result.status).toBe(200)
-    expect(result.body.data.length).toBe(15)
+    expect(result.body.data.length).toBe(10)
     expect(result.body.paging.page).toBe(1)
     expect(result.body.paging.totalPage).toBe(2)
     expect(result.body.paging.totalItem).toBe(15)
   })
-  it('allow search to page 2', async () => {
+  it('should can search to page 2', async () => {
     const result = await supertest(web)
       .get('/api/notes')
       .set('Authorization', 'test')
       .query({ page: 2 })
 
     expect(result.status).toBe(200)
-    expect(result.body.data.length).toBe(15)
+    expect(result.body.data.length).toBe(5)
     expect(result.body.paging.page).toBe(2)
     expect(result.body.paging.totalPage).toBe(2)
     expect(result.body.paging.totalItem).toBe(15)
   })
-  it('allow search using name', async () => {
+  it('should can search using name', async () => {
     const result = await supertest(web)
       .get('/api/notes')
       .set('Authorization', 'test')

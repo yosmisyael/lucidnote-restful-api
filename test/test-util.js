@@ -31,14 +31,6 @@ export const getTestUser = async () => {
 }
 
 // note test util
-export const deleteAllTestNotes = async () => {
-  await prismaClient.note.deleteMany({
-    where: {
-      username: 'test'
-    }
-  })
-}
-
 export const createTestNotes = async () => {
   await prismaClient.note.create({
     data: {
@@ -76,8 +68,16 @@ export const getTestNotes = async () => {
   })
 }
 
+export const deleteAllTestNotes = async () => {
+  await prismaClient.note.deleteMany({
+    where: {
+      username: 'test'
+    }
+  })
+}
+
 // tag test util
-export const removeTestTag = async () => {
+export const removeAllTestTag = async () => {
   return prismaClient.tag.deleteMany({
     where: {
       username: 'test'
@@ -95,6 +95,18 @@ export const createTestTag = async () => {
   })
 }
 
+export const createManyTestTag = async () => {
+  for (let i = 0; i < 7; i++) {
+    await prismaClient.tag.create({
+      data: {
+        username: 'test',
+        tagName: `test ${i}`,
+        id: `test ${i}`
+      }
+    })
+  }
+}
+
 export const getTestTag = async () => {
   return prismaClient.tag.findFirst({
     where: {
@@ -103,36 +115,38 @@ export const getTestTag = async () => {
   })
 }
 
-export const removeAllTestAddresses = async () => {
-  await prismaClient.address.deleteMany({
+export const removeAllAttachedTag = async () => {
+  return prismaClient.noteTag.deleteMany({
     where: {
-      contact: {
-        username: 'test'
-      }
+      noteId: 'test'
     }
   })
 }
 
-export const createTestAddress = async () => {
-  const contact = await getTestNotes()
-  await prismaClient.address.create({
+export const attachTag = async () => {
+  return prismaClient.noteTag.create({
     data: {
-      contact_id: contact.id,
-      street: 'jalan test',
-      city: 'kota test',
-      province: 'provinsi test',
-      country: 'indonesia',
-      postal_code: '234234'
+      noteId: 'test',
+      tagId: 'test'
     }
   })
 }
 
-export const getTestAddress = async () => {
-  return prismaClient.address.findFirst({
-    where: {
-      contact: {
-        username: 'test'
+export const attachManyTestTag = async () => {
+  for (let i = 0; i < 7; i++) {
+    await prismaClient.noteTag.create({
+      data: {
+        tagId: `test ${i}`,
+        noteId: 'test'
       }
+    })
+  }
+}
+
+export const getAttachedTag = async () => {
+  return prismaClient.noteTag.findFirst({
+    where: {
+      noteId: 'test'
     }
   })
 }

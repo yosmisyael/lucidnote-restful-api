@@ -16,7 +16,7 @@ const create = async (req, res, next) => {
 const get = async (req, res, next) => {
   try {
     const user = req.user
-    const noteId = req.params.id
+    const noteId = req.params.noteId
     const result = await noteService.get(user, noteId)
     res.status(200).json({
       data: result
@@ -29,7 +29,7 @@ const get = async (req, res, next) => {
 const update = async (req, res, next) => {
   try {
     const user = req.user
-    const noteId = req.params.id
+    const noteId = req.params.noteId
     const request = req.body
     request.id = noteId
     const result = await noteService.update(user, request)
@@ -44,7 +44,7 @@ const update = async (req, res, next) => {
 const remove = async (req, res, next) => {
   try {
     const user = req.user
-    const noteId = req.params.id
+    const noteId = req.params.noteId
     await noteService.remove(user, noteId)
     res.status(200).json({
       data: 'OK'

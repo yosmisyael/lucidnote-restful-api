@@ -21,10 +21,15 @@ const searchNoteValidation = Joi.object({
   title: Joi.string().optional()
 })
 
+const addTagValidation = Joi.object({
+  selectedTag: Joi.array().required()
+})
+
 export {
   createNoteValidation,
   getNoteValidation,
   updateNoteValidation,
   deleteNoteValidation,
-  searchNoteValidation
+  searchNoteValidation,
+  addTagValidation
 }

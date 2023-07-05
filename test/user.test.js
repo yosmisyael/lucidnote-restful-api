@@ -10,7 +10,7 @@ describe('POST /api/users', function () {
     await removeTestUser()
   })
 
-  it('allow register new user', async () => {
+  it('should register new user', async () => {
     const result = await supertest(web)
       .post('/api/users')
       .send({
@@ -25,7 +25,7 @@ describe('POST /api/users', function () {
     expect(result.body.data.name).toBe('test')
     expect(result.body.data.password).toBeUndefined()
   })
-  it('reject invalid request body', async () => {
+  it('should reject invalid request body', async () => {
     const result = await supertest(web)
       .post('/api/users')
       .send({
@@ -38,7 +38,7 @@ describe('POST /api/users', function () {
     expect(result.status).toBe(400)
     expect(result.body.errors).toBeDefined()
   })
-  it('reject if username already registered', async () => {
+  it('should reject request if username already registered', async () => {
     await createTestUser()
     const result = await supertest(web)
       .post('/api/users')
@@ -63,7 +63,7 @@ describe('POST /api/users/login', function () {
     await removeTestUser()
   })
 
-  it('allow login request from registered user', async () => {
+  it('should allow login request from registered user', async () => {
     const result = await supertest(web)
       .post('/api/users/login')
       .send({
@@ -77,7 +77,7 @@ describe('POST /api/users/login', function () {
     expect(result.body.data.token).toBeDefined()
     expect(result.body.data.token).not.toBe('test')
   })
-  it('reject login if request body is invalid', async () => {
+  it('should reject login if request body is invalid', async () => {
     const result = await supertest(web)
       .post('/api/users/login')
       .send({
@@ -90,7 +90,7 @@ describe('POST /api/users/login', function () {
     expect(result.status).toBe(400)
     expect(result.body.errors).toBeDefined()
   })
-  it('reject login if password is wrong', async () => {
+  it('should reject login if password is wrong', async () => {
     const result = await supertest(web)
       .post('/api/users/login')
       .send({
@@ -103,7 +103,7 @@ describe('POST /api/users/login', function () {
     expect(result.status).toBe(401)
     expect(result.body.errors).toBeDefined()
   })
-  it('reject login if username is wrong', async () => {
+  it('should reject login if username is wrong', async () => {
     const result = await supertest(web)
       .post('/api/users/login')
       .send({
@@ -127,7 +127,7 @@ describe('GET /api/users/current', function () {
     await removeTestUser()
   })
 
-  it('can get current user', async () => {
+  it('should get current user', async () => {
     const result = await supertest(web)
       .get('/api/users/current')
       .set('Authorization', 'test')
@@ -136,7 +136,7 @@ describe('GET /api/users/current', function () {
     expect(result.body.data.username).toBe('test')
     expect(result.body.data.name).toBe('test')
   })
-  it('reject for request if token is invalid', async () => {
+  it('should reject for request if token is invalid', async () => {
     const result = await supertest(web)
       .get('/api/users/current')
       .set('Authorization', 'dumb')
@@ -214,7 +214,7 @@ describe('DELETE /api/users/logout', function () {
   afterEach(async () => {
     await removeTestUser()
   })
-  it('allow user to logout', async () => {
+  it('should allow user to logout', async () => {
     const result = await supertest(web)
       .delete('/api/users/logout')
       .set('Authorization', 'test')

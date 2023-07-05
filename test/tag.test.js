@@ -1,8 +1,18 @@
 /* eslint-disable no-undef */
 import supertest from 'supertest'
-import { web } from '../src/apps/web'
-import { createTestUser, removeTestUser, removeTestTag, createTestTag, getTestTag } from './test-util'
-import { logger } from '../src/apps/logging'
+import { web } from '../src/apps/web.js'
+import {
+  createTestUser,
+  removeTestUser,
+  removeAllTestTag,
+  createTestTag,
+  getTestTag,
+  createTestNotes,
+  attachTag,
+  getAttachedTag,
+  deleteAllTestNotes
+} from './test-util.js'
+import { logger } from '../src/apps/logging.js'
 
 describe('POST /api/tags', function () {
   beforeEach(async () => {
@@ -10,11 +20,11 @@ describe('POST /api/tags', function () {
   })
 
   afterEach(async () => {
-    await removeTestTag()
+    await removeAllTestTag()
     await removeTestUser()
   })
 
-  it('allow user to create a tag', async () => {
+  it('should can create a tag', async () => {
     const result = await supertest(web)
       .post('/api/tags')
       .set('Authorization', 'test')
@@ -26,7 +36,7 @@ describe('POST /api/tags', function () {
 
     logger.info(result.body)
   })
-  it('reject create tag request if unauthorized', async () => {
+  it('should reject create tag request if unauthorized', async () => {
     await createTestTag()
     const result = await supertest(web)
       .post('/api/tags')
@@ -37,7 +47,7 @@ describe('POST /api/tags', function () {
     expect(result.status).toBe(401)
     expect(result.body.errors).toBeDefined()
   })
-  it('reject create tag request if body is invalid', async () => {
+  it('should reject create tag request if body is invalid', async () => {
     const result = await supertest(web)
       .post('/api/tags')
       .set('Authorization', 'test')
@@ -47,7 +57,7 @@ describe('POST /api/tags', function () {
     expect(result.status).toBe(400)
     expect(result.body.errors).toBeDefined()
   })
-  it('reject create tag request if tag already exist', async () => {
+  it('should reject create tag request if tag already exist', async () => {
     await createTestTag()
     const result = await supertest(web)
       .post('/api/tags')
@@ -60,17 +70,48 @@ describe('POST /api/tags', function () {
   })
 })
 
-describe('PUT /api/tags/id', function () {
+describe('GET /api/tags/:username', function () {
   beforeEach(async () => {
     await createTestUser()
   })
 
   afterEach(async () => {
-    await removeTestTag()
+    await removeAllTestTag()
     await removeTestUser()
   })
 
-  it('allow user to rename their tag', async () => {
+  it('should get all tag created by specific user', async () => {
+    await createTestTag()
+
+    const result = await supertest(web)
+      .get('/api/tags/' + 'test')
+      .set('Authorization', 'test')
+
+    expect(result.status).toBe(200)
+    expect(result.body.data).toBeDefined()
+    expect(result.body.data.length).toBeGreaterThan(0)
+  })
+  it('should reject request if user has no tag', async () => {
+    const result = await supertest(web)
+      .get('/api/tags/' + 'test')
+      .set('Authorization', 'test')
+
+    expect(result.status).toBe(404)
+    expect(result.body.errors).toBeDefined()
+  })
+})
+
+describe('PUT /api/tags/:tagId', function () {
+  beforeEach(async () => {
+    await createTestUser()
+  })
+
+  afterEach(async () => {
+    await removeAllTestTag()
+    await removeTestUser()
+  })
+
+  it('should rename tag', async () => {
     const testTag = await createTestTag()
 
     const result = await supertest(web)
@@ -85,7 +126,7 @@ describe('PUT /api/tags/id', function () {
     expect(result.body.data.tagName).toBe('new test')
     expect(result.body.data.username).toBe(testTag.username)
   })
-  it('reject request if tag already exist', async () => {
+  it('should reject request if tag already exist', async () => {
     const testTag = await createTestTag()
 
     const result = await supertest(web)
@@ -98,7 +139,7 @@ describe('PUT /api/tags/id', function () {
     expect(result.status).toBe(400)
     expect(result.body.errors).toBeDefined()
   })
-  it('reject request if tag name is invalid', async () => {
+  it('should reject request if tag name is invalid', async () => {
     const testTag = await createTestTag()
 
     const result = await supertest(web)
@@ -113,17 +154,18 @@ describe('PUT /api/tags/id', function () {
   })
 })
 
-describe('DELETE /api/tags/id', function () {
+describe('DELETE /api/tags/:tagId', function () {
   beforeEach(async () => {
     await createTestUser()
   })
 
   afterEach(async () => {
-    await removeTestTag()
+    await deleteAllTestNotes()
+    await removeAllTestTag()
     await removeTestUser()
   })
 
-  it('allow user to delete their tag', async () => {
+  it('should delete tag', async () => {
     let testTag = await createTestTag()
 
     const result = await supertest(web)
@@ -136,7 +178,22 @@ describe('DELETE /api/tags/id', function () {
     testTag = await getTestTag()
     expect(testTag).toBeNull()
   })
-  it('reject request if tag is not found', async () => {
+  it('should delete tag even it used on some notes', async () => {
+    await createTestNotes()
+    await createTestTag()
+    await attachTag()
+
+    const result = await supertest(web)
+      .delete('/api/tags/' + 'test')
+      .set('Authorization', 'test')
+
+    expect(result.status).toBe(200)
+    expect(result.body.data).toBe('OK')
+
+    const testTag = await getAttachedTag()
+    expect(testTag).toBeNull()
+  })
+  it('should reject request if tag is not found', async () => {
     const result = await supertest(web)
       .delete('/api/tags/' + 'dumb')
       .set('Authorization', 'test')

@@ -1,6 +1,12 @@
 import { prismaClient } from '../apps/database.js'
 import { ResponseError } from '../error/response-error.js'
-import { createNoteValidation, deleteNoteValidation, getNoteValidation, searchNoteValidation, updateNoteValidation } from '../validation/note-validation.js'
+import {
+  createNoteValidation,
+  deleteNoteValidation,
+  getNoteValidation,
+  searchNoteValidation,
+  updateNoteValidation
+} from '../validation/note-validation.js'
 import { validate } from '../validation/validation.js'
 import { v4 as uuid } from 'uuid'
 
@@ -84,12 +90,12 @@ const update = async (user, request) => {
 }
 
 const remove = async (user, noteId) => {
-  const note = validate(deleteNoteValidation, noteId)
+  const id = validate(deleteNoteValidation, noteId)
 
   const countNote = await prismaClient.note.count({
     where: {
       username: user.username,
-      id: note
+      id
     }
   })
 
@@ -97,9 +103,23 @@ const remove = async (user, noteId) => {
     throw new ResponseError(404, 'note is not found')
   }
 
+  const countUseTag = await prismaClient.noteTag.count({
+    where: {
+      noteId: id
+    }
+  })
+
+  if (countUseTag > 0) {
+    await prismaClient.noteTag.deleteMany({
+      where: {
+        noteId: id
+      }
+    })
+  }
+
   return prismaClient.note.delete({
     where: {
-      id: note
+      id
     }
   })
 }

@@ -31,7 +31,7 @@ Response body error:
 ```
 
 ## Update Note API
-Endpoint: PUT /api/notes/id
+Endpoint: PUT /api/notes/{noteId}
 Header: 
   - Authorization: token
 
@@ -63,7 +63,7 @@ Response body error:
 
 
 ## Get Note API
-Endpoint: GET /api/notes/id
+Endpoint: GET /api/notes/{noteId}
 
 Header: 
   - Authorization: token
@@ -87,7 +87,7 @@ Response body error:
 ```
 
 ## Delete Note API 
-Endpoint: DELETE /api/notes/id
+Endpoint: DELETE /api/notes/{noteId}
 Header: 
   - Authorization: token
 
@@ -141,14 +141,14 @@ Response body success:
 ```
 
 ## Register Note to Tag API
-Endpoint: POST /api/notes/tags
+Endpoint: POST /api/notes/{noteId}/tags
 Header:
   - Authorization: token
 
 Request body: 
 ```json
 {
-  "tag": ["test"]
+  "selectedTag": ["unique tag id 1", "unique tag id 2", "unique tag id 3"]
 }
 ```
 
@@ -165,8 +165,29 @@ Response body error:
   "error": "unauthorized"
 }
 ```
-## Update Note's Tag API
-Endpoint: PATCH /api/notes/tags
+
+## Get All Attached Tags API
+Endpoint: GET /api/notes/{noteId}/tags
+Header:
+  - Authorization: token
+
+Response body success:
+```json
+{ 
+  "id": "unique note id",
+  "data": ["test1", "test2", "test3"]
+}
+```
+
+Response body error:
+```json
+{
+  "error": "note does not have any tags"
+}
+```
+
+## Update Attached Tag API
+Endpoint: PATCH /api/notes/{noteId}/tags
 Header:
   - Authorization: token
 
@@ -187,31 +208,8 @@ Response body success:
 Response body error:
 ```json
 {
-  "error": "unauthorized"
-}
-```
-## Delete Note's Tag API
-Endpoint: DELETE /api/notes/tags/tag
-Header:
-  - Authorization: token
-
-Request body: 
-```json
-{
-  "tag": ["test", "new tag"]
+  "error": "the requested tags contain invalid tags"
 }
 ```
 
-Response body success:
-```json
-{
-  "data": "OK"
-}
-```
 
-Response body error:
-```json
-{
-  "error": "tag is not found"
-}
-```

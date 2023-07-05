@@ -28,8 +28,28 @@ Response body error:
 }
 ```
 
+## Get All Tag API
+Endpoint: GET /api/tags/{username}
+
+Header: 
+  - Authorization: token
+
+Response body success: 
+```json
+{
+  "data": ["test1", "test2", "test3"]
+}
+```
+Response body error:
+```json
+{
+  "error": "unauthorized"
+}
+```
+
+
 ## Update Tag API
-Endpoint: PUT /api/tags/id
+Endpoint: PUT /api/tags/{tagId}
 
 Header: 
   - Authorization: token
@@ -60,7 +80,7 @@ Response body error:
 ```
 
 ## Delete Tag API
-Endpoint: DELETE /api/tags/id
+Endpoint: DELETE /api/tags/{tagId}
 
 Header: 
   - Authorization: token
