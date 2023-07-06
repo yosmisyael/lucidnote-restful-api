@@ -1,14 +1,15 @@
-/* eslint-disable no-undef */
 import supertest from 'supertest'
 import { web } from '../src/apps/web.js'
 import {
   attachTag,
   createManyTestNotes,
+  createManyTestTag,
   createTestNotes,
   createTestTag,
   createTestUser,
   deleteAllTestNotes,
   getTestNotes,
+  removeAllAttachedTag,
   removeAllTestTag,
   removeTestUser
 } from './test-util.js'
@@ -189,6 +190,52 @@ describe('DELETE /api/users/:noteId', function () {
   })
 })
 
+describe('POST /api/notes/filter', function () {
+  beforeEach(async () => {
+    await createTestUser()
+    await createTestNotes()
+    await createManyTestNotes()
+    await createTestTag()
+    await createManyTestTag()
+    await attachTag()
+  })
+
+  afterEach(async () => {
+    await removeAllAttachedTag()
+    await removeAllTestTag()
+    await deleteAllTestNotes()
+    await removeTestUser()
+  })
+
+  it('should can filter notes by tag', async () => {
+    const result = await supertest(web)
+      .post('/api/notes/filter')
+      .set('Authorization', 'test')
+      .send({
+        filterTags: ['test']
+      })
+
+    expect(result.status).toBe(200)
+    expect(result.body.data.length).toBe(1)
+    expect(result.body.paging.page).toBe(1)
+    expect(result.body.paging.totalPage).toBe(1)
+    expect(result.body.paging.totalItem).toBe(1)
+  })
+  it('should return empty data if no notes meet criteria', async () => {
+    const result = await supertest(web)
+      .post('/api/notes/filter')
+      .set('Authorization', 'test')
+      .send({
+        filterTags: ['dumb']
+      })
+
+    expect(result.status).toBe(200)
+    expect(result.body.paging.page).toBe(1)
+    expect(result.body.data.length).toBe(0)
+    expect(result.body.paging.totalPage).toBe(0)
+    expect(result.body.paging.totalItem).toBe(0)
+  })
+})
 describe('GET /api/notes', function () {
   beforeEach(async () => {
     await createTestUser()

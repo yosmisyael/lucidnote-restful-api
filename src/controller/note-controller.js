@@ -72,10 +72,30 @@ const search = async (req, res, next) => {
   }
 }
 
+const filterByTag = async (req, res, next) => {
+  try {
+    const user = req.user
+    const request = {
+      filterTags: req.body.filterTags,
+      size: req.query.size,
+      page: req.query.page
+    }
+
+    const result = await noteService.filterByTag(user, request)
+    res.status(200).json({
+      data: result.data,
+      paging: result.paging
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
 export default {
   create,
   get,
   update,
   remove,
-  search
+  search,
+  filterByTag
 }

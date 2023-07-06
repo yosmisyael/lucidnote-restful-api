@@ -3,6 +3,7 @@ import { ResponseError } from '../error/response-error.js'
 import {
   createNoteValidation,
   deleteNoteValidation,
+  filterNoteValidation,
   getNoteValidation,
   searchNoteValidation,
   updateNoteValidation
@@ -125,25 +126,25 @@ const remove = async (user, noteId) => {
 }
 
 const search = async (user, request) => {
-  request = validate(searchNoteValidation, request)
+  const { title, page, size } = validate(searchNoteValidation, request)
 
-  const skip = (request.page - 1) * request.size
+  const skip = (page - 1) * size
 
-  const filter = [{ username: user.username }]
+  const filters = [{ username: user.username }]
 
-  if (request.title) {
-    filter.push({
+  if (title) {
+    filters.push({
       title: {
-        contains: request.title
+        contains: title
       }
     })
   }
 
   let notes = await prismaClient.note.findMany({
     where: {
-      AND: filter
+      AND: filters
     },
-    take: request.size,
+    take: size,
     skip
   })
   notes = notes.map((note) => {
@@ -153,15 +154,67 @@ const search = async (user, request) => {
   })
   const countNotes = await prismaClient.note.count({
     where: {
-      AND: filter
+      AND: filters
     }
   })
   return {
     data: notes,
     paging: {
-      page: request.page,
+      page,
       totalItem: countNotes,
-      totalPage: Math.ceil(countNotes / request.size)
+      totalPage: Math.ceil(countNotes / size)
+    }
+  }
+}
+
+const filterByTag = async (user, request) => {
+  const { filterTags, page, size } = validate(filterNoteValidation, request)
+  const skip = (page - 1) * size
+
+  if (filterTags.length === 0) {
+    throw new ResponseError(400, 'no tag selected')
+  }
+
+  const countNotes = await prismaClient.note.count({
+    where: {
+      username: user.username,
+      tags: {
+        some: {
+          tagId: {
+            in: filterTags
+          }
+        }
+      }
+    }
+  })
+
+  let result = await prismaClient.note.findMany({
+    where: {
+      username: user.username,
+      tags: {
+        some: {
+          tagId: {
+            in: filterTags
+          }
+        }
+      }
+    },
+    take: size,
+    skip
+  })
+
+  result = result.map(note => {
+    note.createdAt = parseInt(note.createdAt)
+    note.updatedAt = parseInt(note.updatedAt)
+    return note
+  })
+
+  return {
+    data: result,
+    paging: {
+      page,
+      totalItem: countNotes,
+      totalPage: Math.ceil(countNotes / size)
     }
   }
 }
@@ -171,5 +224,6 @@ export default {
   get,
   update,
   remove,
-  search
+  search,
+  filterByTag
 }

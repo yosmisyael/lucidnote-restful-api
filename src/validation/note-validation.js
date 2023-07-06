@@ -16,11 +16,16 @@ const updateNoteValidation = Joi.object({
 const deleteNoteValidation = Joi.string().max(100).required()
 
 const searchNoteValidation = Joi.object({
-  page: Joi.number().min(1).positive().default(1),
+  title: Joi.string().optional(),
   size: Joi.number().min(1).positive().max(100).default(10),
-  title: Joi.string().optional()
+  page: Joi.number().min(1).positive().default(1)
 })
 
+const filterNoteValidation = Joi.object({
+  filterTags: Joi.array().required(),
+  size: Joi.number().min(1).positive().max(100).default(10),
+  page: Joi.number().min(1).positive().default(1)
+})
 const addTagValidation = Joi.object({
   selectedTag: Joi.array().required()
 })
@@ -31,5 +36,6 @@ export {
   updateNoteValidation,
   deleteNoteValidation,
   searchNoteValidation,
+  filterNoteValidation,
   addTagValidation
 }

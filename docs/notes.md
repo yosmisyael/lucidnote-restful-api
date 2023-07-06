@@ -140,6 +140,50 @@ Response body success:
 }
 ```
 
+## Filter Notes by Tags
+Header: 
+  - Authorization: token
+
+Request body:
+```json
+{
+  filter: ["tag1", "tag2"]
+}
+```
+Response body success:
+```json
+{
+  "data": [
+    {
+      "id": "unique-id",
+      "title": "first note",
+      "body": "example body",
+      "createdAt": 1688302310471,
+      "updatedAt": 1688302324523
+    }, 
+    {
+      "id": "unique-id",
+      "title": "second note",
+      "body": "example body",
+      "createdAt": 1688302310471,
+      "updatedAt": 1688302324523
+    }, 
+  ],
+  "paging": {
+    "page": 1,
+    "totalPage": 3,
+    "totalItem": 30
+  }
+}
+```
+
+Response body error:
+```json
+{
+  "errors": "no note found"
+}
+```
+
 ## Register Note to Tag API
 Endpoint: POST /api/notes/{noteId}/tags
 Header:

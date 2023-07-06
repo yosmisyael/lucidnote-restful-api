@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import supertest from 'supertest'
 import { web } from '../src/apps/web.js'
 import { createTestUser, getTestUser, removeTestUser } from './test-util.js'

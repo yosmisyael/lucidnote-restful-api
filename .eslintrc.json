@@ -5,6 +5,12 @@
     },
     "extends": "standard",
     "overrides": [
+        {
+            "files": ["*.test.js"],
+            "rules": {
+                "no-undef": "off"
+            }
+        }
     ],
     "parserOptions": {
         "ecmaVersion": "latest",
