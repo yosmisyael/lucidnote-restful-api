@@ -48,7 +48,7 @@ describe('POST /api/notes/:noteId/tags', function () {
         selectedTag: ['test']
       })
 
-    expect(result.status).toBe(404)
+    expect(result.status).toBe(400)
     expect(result.body.errors).toBeDefined()
   })
 })
@@ -66,6 +66,14 @@ describe('GET /api/notes/:noteId/tags', function () {
     await deleteAllTestNotes()
     await removeTestUser()
   })
+  it('should return empty array if note does not have any tag', async () => {
+    const result = await supertest(web)
+      .get('/api/notes/test/tags')
+      .set('Authorization', 'test')
+
+    expect(result.status).toBe(200)
+    expect(result.body.data).toBeDefined()
+  })
 
   it('should get all attached tag of a note', async () => {
     await attachManyTestTag()
@@ -76,16 +84,7 @@ describe('GET /api/notes/:noteId/tags', function () {
 
     expect(result.status).toBe(200)
     expect(result.body.data.length).toBe(7)
-    expect(result.body.data[0].noteId).toBe('test')
-    expect(result.body.data[0].tagId).toBe('test 0')
-  })
-  it('should reject if note does not have any tag', async () => {
-    const result = await supertest(web)
-      .get('/api/notes/test/tags')
-      .set('Authorization', 'test')
-
-    expect(result.status).toBe(404)
-    expect(result.body.errors).toBeDefined()
+    expect(result.body.data[0]).toBe('test 0')
   })
 })
 
@@ -128,7 +127,7 @@ describe('PUT /api/notes/:noteId/tags', function () {
         selectedTag: ['dumb']
       })
 
-    expect(result.status).toBe(404)
+    expect(result.status).toBe(400)
     expect(result.body.errors).toBeDefined()
   })
 })
