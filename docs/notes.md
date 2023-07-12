@@ -32,6 +32,7 @@ Response body error:
 
 ## Update Note API
 Endpoint: PUT /api/notes/{noteId}
+
 Header: 
   - Authorization: token
 
@@ -106,6 +107,7 @@ Response body error:
 
 ## Search Note API
 Endpoint: GET /api/notes
+
 Header: 
   - Authorization: token
 
@@ -141,6 +143,7 @@ Response body success:
 ```
 
 ## Filter Notes by Tags
+
 Header: 
   - Authorization: token
 
@@ -186,6 +189,7 @@ Response body error:
 
 ## Register Note to Tag API
 Endpoint: POST /api/notes/{noteId}/tags
+
 Header:
   - Authorization: token
 
@@ -212,26 +216,20 @@ Response body error:
 
 ## Get All Attached Tags API
 Endpoint: GET /api/notes/{noteId}/tags
+
 Header:
   - Authorization: token
 
 Response body success:
 ```json
 { 
-  "id": "unique note id",
   "data": ["test1", "test2", "test3"]
-}
-```
-
-Response body error:
-```json
-{
-  "error": "note does not have any tags"
 }
 ```
 
 ## Update Attached Tag API
 Endpoint: PATCH /api/notes/{noteId}/tags
+
 Header:
   - Authorization: token
 
