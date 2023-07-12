@@ -37,7 +37,7 @@ Header:
 Response body success: 
 ```json
 {
-  "data": ["test1", "test2", "test3"]
+  "data": ["tagName1", "tagName2", "tagName3"]
 }
 ```
 Response body error:
@@ -57,7 +57,7 @@ Header:
 Request body:
 ```json
 {
-  "tagName": "new name"
+  "tagName": "new tagName"
 }
 ```
 
@@ -67,7 +67,7 @@ Response body success:
   "data": {
     id: "unique id"
     username: "test", // corresponding tag owner
-    tagName: "test"
+    tagName: "new tagName"
   }
 }
 ```

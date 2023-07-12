@@ -43,7 +43,7 @@ const get = async (user) => {
   })
 
   if (count === 0) {
-    throw new ResponseError(404, 'no tag has created yet')
+    return []
   }
 
   return prismaClient.tag.findMany({
