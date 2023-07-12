@@ -190,7 +190,7 @@ Header:
 Request body: 
 ```json
 {
-  "selectedTag": ["tagName1", "tagName2", "tagName3"]
+  "selectedTag": ["tagId1", "tagId2", "tagId3"]
 }
 ```
 
