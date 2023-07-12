@@ -37,7 +37,20 @@ Header:
 Response body success: 
 ```json
 {
-  "data": ["tagName1", "tagName2", "tagName3"]
+  "data": [
+    {
+      "tagName": "tagName1",
+      "id": "tagId1"
+    },
+    {
+      "tagName": "tagName2",
+      "id": "tagId2"
+    },
+    {
+      "tagName": "tagName3",
+      "id": "tagId3"
+    }
+  ]
 }
 ```
 Response body error:
