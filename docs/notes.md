@@ -151,7 +151,7 @@ Header:
 Request body:
 ```json
 {
-  filter: ["tag1", "tag2"]
+  filter: ["tagName1", "tagName2"]
 }
 ```
 Response body success:
@@ -178,13 +178,6 @@ Response body success:
     "totalPage": 3,
     "totalItem": 30
   }
-}
-```
-
-Response body error:
-```json
-{
-  "errors": "no note found"
 }
 ```
 
