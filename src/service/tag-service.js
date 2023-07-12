@@ -49,6 +49,10 @@ const get = async (user) => {
   return prismaClient.tag.findMany({
     where: {
       username: user
+    },
+    select: {
+      tagName: true,
+      id: true
     }
   })
 }
