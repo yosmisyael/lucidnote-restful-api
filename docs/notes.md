@@ -197,7 +197,7 @@ Header:
 Request body: 
 ```json
 {
-  "selectedTag": ["unique tag id 1", "unique tag id 2", "unique tag id 3"]
+  "selectedTag": ["tagName1", "tagName2", "tagName3"]
 }
 ```
 
@@ -224,12 +224,12 @@ Header:
 Response body success:
 ```json
 { 
-  "data": ["test1", "test2", "test3"]
+  "data": ["tagName11", "tagName12", "tagName13"]
 }
 ```
 
 ## Update Attached Tag API
-Endpoint: PATCH /api/notes/{noteId}/tags
+Endpoint: PUT /api/notes/{noteId}/tags
 
 Header:
   - Authorization: token
@@ -237,7 +237,7 @@ Header:
 Request body: 
 ```json
 {
-  "tag": ["test", "new tag"]
+  "tag": ["tagName1", "tagName2"]
 }
 ```
 
