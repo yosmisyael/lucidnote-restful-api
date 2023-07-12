@@ -89,6 +89,7 @@ Response body error:
 
 ## Delete Note API 
 Endpoint: DELETE /api/notes/{noteId}
+
 Header: 
   - Authorization: token
 
