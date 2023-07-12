@@ -31,7 +31,7 @@ Response body error:
 ```
 
 ## Login User API
-Endpoint: GET /api/users/login
+Endpoint: POST /api/users/login
 
 Request body:
 ```json
