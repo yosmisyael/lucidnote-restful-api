@@ -14,7 +14,7 @@ const addTag = async (noteId, request) => {
       }
     })
     if (!tagInDatabase) {
-      throw new ResponseError(404, 'the requested tags contain invalid tags')
+      throw new ResponseError(400, 'the requested tags contain invalid tags')
     }
   }
 
@@ -40,7 +40,7 @@ const getTag = async (noteId) => {
   })
 
   if (count < 1) {
-    throw new ResponseError(404, 'note does not have any tags')
+    return []
   }
 
   const tagIdList = await prismaClient.noteTag.findMany({
@@ -75,7 +75,7 @@ const updateTag = async (noteId, request) => {
       }
     })
     if (!tagInDatabase) {
-      throw new ResponseError(404, `tag with id ${tag} is not exist`)
+      throw new ResponseError(400, 'the requested tags contain invalid tags')
     }
   }
 
