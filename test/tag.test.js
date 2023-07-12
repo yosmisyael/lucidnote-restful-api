@@ -90,13 +90,13 @@ describe('GET /api/tags/:username', function () {
     expect(result.body.data).toBeDefined()
     expect(result.body.data.length).toBeGreaterThan(0)
   })
-  it('should reject request if user has no tag', async () => {
+  it('should return empty array if user has no tag', async () => {
     const result = await supertest(web)
       .get('/api/tags/' + 'test')
       .set('Authorization', 'test')
 
-    expect(result.status).toBe(404)
-    expect(result.body.errors).toBeDefined()
+    expect(result.status).toBe(200)
+    expect(result.body.data.length).toBe(0)
   })
 })
 
