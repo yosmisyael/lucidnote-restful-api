@@ -1,9 +1,6 @@
 import { prismaClient } from '../apps/database.js'
 import { ResponseError } from '../error/response-error.js'
-import {
-  addTagValidation,
-  getNoteValidation
-} from '../validation/note-validation.js'
+import { addTagValidation, getNoteValidation } from '../validation/note-validation.js'
 import { validate } from '../validation/validation.js'
 
 const addTag = async (noteId, request) => {
@@ -46,11 +43,25 @@ const getTag = async (noteId) => {
     throw new ResponseError(404, 'note does not have any tags')
   }
 
-  return prismaClient.noteTag.findMany({
+  const tagIdList = await prismaClient.noteTag.findMany({
     where: {
       noteId
     }
   })
+
+  const tagNameList = await Promise.all(tagIdList.map(async (item) => {
+    const tag = await prismaClient.tag.findUnique({
+      where: {
+        id: item.tagId
+      },
+      select: {
+        tagName: true
+      }
+    })
+    return tag.tagName
+  }))
+
+  return tagNameList
 }
 
 const updateTag = async (noteId, request) => {
