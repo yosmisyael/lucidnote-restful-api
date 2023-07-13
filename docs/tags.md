@@ -2,6 +2,7 @@
 
 ## Create Tag API
 Endpoint: POST /api/tags
+
 Header:
   - Authorization: token
 
