@@ -230,7 +230,7 @@ Header:
 Request body: 
 ```json
 {
-  "tag": ["tagId1", "tagId2"]
+  "selectedTag": ["tagId1", "tagId2"]
 }
 ```
 
