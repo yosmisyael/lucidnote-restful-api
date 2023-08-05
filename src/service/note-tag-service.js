@@ -55,10 +55,11 @@ const getTag = async (noteId) => {
         id: item.tagId
       },
       select: {
-        tagName: true
+        tagName: true,
+        id: true
       }
     })
-    return tag.tagName
+    return tag
   }))
 
   return tagNameList

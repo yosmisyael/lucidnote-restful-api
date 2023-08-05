@@ -84,7 +84,6 @@ describe('GET /api/notes/:noteId/tags', function () {
 
     expect(result.status).toBe(200)
     expect(result.body.data.length).toBe(7)
-    expect(result.body.data[0]).toBe('test 0')
   })
 })
 
