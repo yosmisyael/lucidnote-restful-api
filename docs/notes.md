@@ -152,7 +152,7 @@ Header:
 Request body:
 ```json
 {
-  filter: ["tagName1", "tagName2"]
+  filter: ["tagId1", "tagId2"]
 }
 ```
 Response body success:
