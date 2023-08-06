@@ -144,6 +144,7 @@ Response body success:
 ```
 
 ## Filter Notes by Tags
+Endpoint: POST api/notes/filter
 
 Header: 
   - Authorization: token
