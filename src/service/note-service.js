@@ -168,40 +168,63 @@ const search = async (user, request) => {
 }
 
 const filterByTag = async (user, request) => {
+  let result
   const { filterTags, page, size } = validate(filterNoteValidation, request)
   const skip = (page - 1) * size
 
-  if (filterTags.length === 0) {
-    throw new ResponseError(400, 'no tag selected')
-  }
-
-  const countNotes = await prismaClient.note.count({
-    where: {
-      username: user.username,
-      tags: {
-        some: {
-          tagId: {
-            in: filterTags
-          }
-        }
+  const checkTagInDB = filterTags.map(async (requestedTagId) => {
+    const countTag = await prismaClient.tag.count({
+      where: {
+        username: user.username,
+        id: requestedTagId
       }
+    })
+    if (countTag === 0) {
+      throw new ResponseError(400, 'Requested tag contains invalid tag')
     }
   })
+  await Promise.all(checkTagInDB)
 
-  let result = await prismaClient.note.findMany({
-    where: {
-      username: user.username,
-      tags: {
-        some: {
-          tagId: {
-            in: filterTags
+  const countNotes =
+  filterTags.length !== 0
+    ? await prismaClient.note.count({
+      where: {
+        username: user.username,
+        tags: {
+          some: {
+            tagId: {
+              in: filterTags
+            }
           }
         }
       }
-    },
-    take: size,
-    skip
-  })
+    })
+    : await prismaClient.note.count({
+      where: {
+        username: user.username
+      }
+    })
+
+  result = filterTags.length !== 0
+    ? await prismaClient.note.findMany({
+      where: {
+        username: user.username,
+        tags: {
+          some: {
+            tagId: {
+              in: filterTags
+            }
+          }
+        }
+      },
+      take: size,
+      skip
+    })
+    : await prismaClient.note.findMany({
+      where: {
+        username: user.username
+      }
+    })
 
   result = result.map(note => {
     note.createdAt = parseInt(note.createdAt)

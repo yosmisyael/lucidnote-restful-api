@@ -216,24 +216,35 @@ describe('POST /api/notes/filter', function () {
       })
 
     expect(result.status).toBe(200)
-    expect(result.body.data.length).toBe(1)
+    expect(result.body.data.length).toBe(10)
     expect(result.body.paging.page).toBe(1)
     expect(result.body.paging.totalPage).toBe(1)
     expect(result.body.paging.totalItem).toBe(1)
   })
-  it('should return empty data if no notes meet criteria', async () => {
+  it('should return all notes data if no tags selected', async () => {
     const result = await supertest(web)
       .post('/api/notes/filter')
       .set('Authorization', 'test')
       .send({
-        filterTags: ['dumb']
+        filterTags: []
       })
 
     expect(result.status).toBe(200)
     expect(result.body.paging.page).toBe(1)
-    expect(result.body.data.length).toBe(0)
-    expect(result.body.paging.totalPage).toBe(0)
-    expect(result.body.paging.totalItem).toBe(0)
+    expect(result.body.data.length).toBe(16)
+    expect(result.body.paging.totalPage).toBe(2)
+    expect(result.body.paging.totalItem).toBe(16)
+  })
+  it('should reject request if the requested tags contain invalid tag', async () => {
+    const result = await supertest(web)
+      .post('/api/notes/filter')
+      .set('Authorization', 'test')
+      .send({
+        filterTags: ['']
+      })
+
+    expect(result.status).toBe(400)
+    expect(result.body.errors).toBeDefined()
   })
 })
 describe('GET /api/notes', function () {
