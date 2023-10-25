@@ -1,0 +1,57 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  username String  @id @db.VarChar(100)
+  password String  @db.VarChar(100)
+  name     String  @db.VarChar(100)
+  email    String  @unique @db.VarChar(100)
+  token    String? @db.VarChar(100)
+  notes    Note[]
+  tags     Tag[]
+
+  @@map("users")
+}
+
+model Note {
+  id        String    @id @db.VarChar(100)
+  title     String    @db.VarChar(100)
+  body      String?   @db.LongText
+  createdAt BigInt    @db.BigInt
+  updatedAt BigInt    @db.BigInt
+  username  String    @db.VarChar(100)
+  user      User      @relation(fields: [username], references: [username])
+  tags      NoteTag[]
+
+  @@map("notes")
+}
+
+model Tag {
+  id       String    @unique @db.VarChar(100)
+  tagName  String    @db.VarChar(100)
+  username String    @db.VarChar(100)
+  user     User      @relation(fields: [username], references: [username])
+  tags     NoteTag[]
+
+  @@id([tagName, username])
+  @@map("tags")
+}
+
+model NoteTag {
+  tagId  String @db.VarChar(100)
+  noteId String @db.VarChar(100)
+  tags   Tag    @relation(fields: [tagId], references: [id])
+  notes  Note   @relation(fields: [noteId], references: [id])
+
+  @@id([tagId, noteId])
+  @@map("junctionNotesTags")
+}

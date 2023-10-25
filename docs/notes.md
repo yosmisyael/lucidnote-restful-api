@@ -75,7 +75,6 @@ Response body success:
   "id": "unique-id",
   "title": "My New Title",
   "body": "I just updated my note.",
-  "tag": [],
   "createdAt": 1688302310471, // unix epoch time
   "updatedAt": 1688302310471 // unix epoch time
 }
@@ -248,5 +247,3 @@ Response body error:
   "error": "the requested tags contain invalid tags"
 }
 ```
-
-

@@ -1,7 +1,7 @@
 # User API Specifications
 
 ## Register User API
-Endpoint: POST /api/users
+**Endpoint: POST /api/users**
 
 Request body: 
 ```json
@@ -14,6 +14,8 @@ Request body:
 ```
 
 Response body success:
+
+Success status code: 201
 ```json
 {
   "data": {
@@ -31,10 +33,10 @@ Response body error:
 ```
 
 ## Login User API
-Endpoint: POST /api/users/login
+**Endpoint: POST /api/users/login**
 
 Request body:
-```json
+```**json**
 {
   "username": "test",
   "password": "test"
@@ -58,7 +60,7 @@ Response body error:
 ```
 
 ## Update User API
-Endpoint: PATCH /api/users/current
+**Endpoint: PATCH /api/users/current**
 
 Header: 
   - Authorization: token
@@ -89,7 +91,7 @@ Response body error:
 }
 ```
 ## Get User API
-Endpoint: GET /api/users/current
+**Endpoint: GET /api/users/current**
 
 Header: 
   - Authorization: token
@@ -111,7 +113,7 @@ Response body error:
 }
 ```
 ## Logout User API
-Endpoint: DELETE /api/users/logout
+**Endpoint: DELETE /api/users/logout**
 
 Header: 
   - Authorization: token

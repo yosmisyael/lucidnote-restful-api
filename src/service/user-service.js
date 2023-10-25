@@ -7,13 +7,24 @@ import { v4 as uuid } from 'uuid'
 
 const register = async (request) => {
   const user = validate(registerUserValidation, request)
-  const countUser = await prismaClient.user.count({
+
+  const countEmail = await prismaClient.user.count({
+    where: {
+      email: user.email
+    }
+  })
+
+  if (countEmail === 1) {
+    throw new ResponseError(400, 'email already taken')
+  }
+
+  const countUsername = await prismaClient.user.count({
     where: {
       username: user.username
     }
   })
 
-  if (countUser === 1) {
+  if (countUsername === 1) {
     throw new ResponseError(400, 'username already exist')
   }
 
